@@ -5,39 +5,42 @@
 \usepackage{booktabs}
 \usepackage[table]{xcolor}
 \usepackage{amsmath}
-\usepackage{listings}
+\usepackage{amssymb}
 \usepackage{tikz}
-\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric}
+
+%% ---- Couleurs INPT ----
+\definecolor{inptblue}{RGB}{10,48,100}
+\definecolor{inptcyan}{RGB}{0,165,215}
+\definecolor{inptlight}{RGB}{232,246,252}
+\definecolor{myred}{RGB}{180,0,0}
 
 %% ---- Theme ----
 \usetheme{Madrid}
-\usecolortheme{default}
-\definecolor{myblue}{RGB}{31,78,121}
-\definecolor{myred}{RGB}{192,0,0}
-\definecolor{mygreen}{RGB}{0,112,44}
-\setbeamercolor{structure}{fg=myblue}
-\setbeamercolor{frametitle}{bg=myblue,fg=white}
-\setbeamercolor{title}{bg=myblue,fg=white}
-\setbeamercolor{block title}{bg=myblue!80,fg=white}
+\setbeamercolor{structure}{fg=inptblue}
+\setbeamercolor{frametitle}{bg=inptblue,fg=white}
+\setbeamercolor{block title}{bg=inptblue,fg=white}
+\setbeamercolor{block body}{bg=inptlight}
 \setbeamercolor{alerted text}{fg=myred}
+\setbeamercolor{block title example}{bg=inptcyan!80!black,fg=white}
+\setbeamercolor{block body example}{bg=inptcyan!10}
+\setbeamercolor{block title alerted}{bg=myred!80,fg=white}
+\setbeamercolor{block body alerted}{bg=myred!8}
+\setbeamercolor{palette primary}{bg=inptblue,fg=white}
+\setbeamercolor{palette secondary}{bg=inptblue!80,fg=white}
+\setbeamercolor{palette tertiary}{bg=inptcyan,fg=white}
+\setbeamercolor{palette quaternary}{bg=inptblue,fg=white}
 \setbeamerfont{frametitle}{series=\bfseries}
 
-\lstset{
-    basicstyle=\ttfamily\scriptsize,
-    backgroundcolor=\color{myblue!5},
-    frame=single, rulecolor=\color{myblue!30},
-    breaklines=true, xleftmargin=4pt, xrightmargin=4pt
-}
-
 %% ---- Meta ----
-\title[Adversarially Robust IDS]{Adversarially Robust\\Intrusion Detection System}
-\subtitle{Deep Learning en Cybers\'ecurit\'e --- Projet 1}
+\title[Adversarially Robust IDS]{Adversarially Robust Intrusion Detection System}
+\subtitle{Deep Learning en Cybers\'ecurit\'e}
 \author{Zakariya El Mansouri}
-\institute{ICCN-INE2}
-\date{Avril 2026}
+\institute{INPT}
+\date{}
 
 %% ---- Footer ----
-\setbeamertemplate{footline}{
+\setbeamertemplate{footline}{%
   \leavevmode\hbox{%
   \begin{beamercolorbox}[wd=.33\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
     \usebeamerfont{author in head/foot}\insertshortauthor
@@ -54,550 +57,455 @@
 \begin{document}
 
 %% ============================================================
-%% TITLE
+%% SLIDE 1 — TITRE
 %% ============================================================
-\begin{frame}
-\titlepage
-\end{frame}
-
-%% ============================================================
-%% PLAN
-%% ============================================================
-\begin{frame}{Plan}
-\tableofcontents
-\end{frame}
-
-%% ============================================================
-\section{Contexte et Threat Model}
-%% ============================================================
-
-\begin{frame}{Probl\'ematique}
-\begin{columns}[T]
-\column{0.55\textwidth}
-\begin{block}{Syst\`eme de D\'etection d'Intrusion (IDS)}
-\begin{itemize}
-    \item Surveille le trafic r\'eseau
-    \item D\'etecte les connexions malveillantes
-    \item Base\'e sur l'apprentissage automatique
-\end{itemize}
-\end{block}
-\vspace{0.4em}
-\begin{alertblock}{Probl\`eme : exemples adversariaux}
-Un attaquant peut modifier l\'eg\`erement son trafic pour \alert{tromper le mod\`ele} tout en maintenant l'efficacit\'e de l'attaque.
-\end{alertblock}
-
-\column{0.42\textwidth}
-\begin{center}
-\begin{tikzpicture}[scale=0.85, every node/.style={font=\footnotesize}]
-  \node[draw,rounded corners,fill=myblue!15,minimum width=2.2cm,minimum height=0.6cm] (traffic) {Trafic r\'eseau};
-  \node[draw,rounded corners,fill=myblue!30,minimum width=2.2cm,minimum height=0.6cm, below=0.5cm of traffic] (ids) {Mod\`ele IDS};
-  \node[draw,rounded corners,fill=mygreen!30,minimum width=1.5cm,minimum height=0.5cm, below left=0.5cm and -0.3cm of ids] (norm) {Normal};
-  \node[draw,rounded corners,fill=myred!30,minimum width=1.5cm,minimum height=0.5cm, below right=0.5cm and -0.3cm of ids] (atk) {Attaque};
-  \draw[-{Stealth}] (traffic) -- (ids);
-  \draw[-{Stealth}] (ids) -- (norm);
-  \draw[-{Stealth}] (ids) -- (atk);
-  \node[draw,dashed,myred,rounded corners,fill=myred!10,minimum width=2.2cm,minimum height=0.6cm, above=0.5cm of traffic] (adv) {\alert{Trafic modifi\'e}};
-  \draw[-{Stealth},myred] (adv) -- node[right,font=\tiny]{perturb\'e} (traffic);
+\begin{frame}[plain]
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[inptblue] (current page.north west) rectangle ([yshift=-1.8cm]current page.north east);
+  \fill[inptcyan]  ([yshift=-1.8cm]current page.north west)
+                   rectangle ([yshift=-2.0cm]current page.north east);
 \end{tikzpicture}
+\vspace{2.2cm}
+\begin{center}
+{\large\bfseries\color{inptblue} Adversarially Robust Intrusion Detection System}\\[0.3em]
+{\small\color{inptcyan} Deep Learning en Cybers\'ecurit\'e}\\[0.6em]
+{\color{inptcyan!60}\rule{0.7\textwidth}{0.6pt}}\\[0.5em]
+{\normalsize\color{inptblue}\textbf{Zakariya El Mansouri}}\\[0.2em]
+{\small\color{gray} Encadr\'e par \textbf{Pr.~Tarik Fissaa}}\\[0.1em]
+{\small\color{gray} Institut National des Postes et T\'el\'ecommunications}
 \end{center}
-\end{columns}
 \end{frame}
 
-\begin{frame}{Threat Model}
+%% ============================================================
+%% SLIDE 2 — PROBLÈME & THREAT MODEL
+%% ============================================================
+\begin{frame}{Probl\`eme \& Threat Model}
 \begin{columns}[T]
 \column{0.48\textwidth}
-\begin{block}{\checkmark\ Features manipulables (14/42)}
-L'attaquant contr\^ole le timing et le volume :
-\medskip
-
-\texttt{\footnotesize dur, spkts, dpkts, sbytes, dbytes,\\
-sttl, sload, dload, sinpkt, dinpkt,\\
-sjit, djit, smean, dmean}
+\begin{block}{Contexte}
+Un IDS d\'etecte les attaques r\'eseau via du deep learning.\\[0.4em]
+Un attaquant peut \textbf{modifier l\'eg\`erement} les statistiques
+de son trafic (timing, volume de paquets) pour tromper le mod\`ele
+\textbf{sans que son attaque cesse de fonctionner}.
 \end{block}
 
 \column{0.48\textwidth}
-\begin{alertblock}{\texttimes\ Features non manipulables}
-Changer ces valeurs briserait l'attaque :
-\medskip
-
-\texttt{\footnotesize proto, service, state,\\srcip, dstip, dport}
+\begin{alertblock}{Threat Model (White-box)}
+\textbf{Manipulable} : \texttt{dur, sbytes, sttl, sload, sinpkt}...\\[0.3em]
+\textbf{Non manipulable} : \texttt{proto, srcip, dport}...\\[0.4em]
+\textbf{Objectif} : faire classer une attaque comme normale.\\[0.2em]
+\textbf{Contrainte} : $\|\delta\|_\infty \leq \varepsilon = 0.1$
 \end{alertblock}
 \end{columns}
+\end{frame}
 
-\vspace{0.8em}
-\begin{exampleblock}{Mod\`ele de l'attaquant}
+%% ============================================================
+%% SLIDE 3 — DATASET
+%% ============================================================
+\begin{frame}{Dataset : UNSW-NB15}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{exampleblock}{Caract\'eristiques}
 \begin{itemize}
-    \item \textbf{White-box} : acc\`es complet au mod\`ele (gradients disponibles)
-    \item \textbf{Objectif} : faire classer une attaque comme trafic normal (\emph{evasion})
-    \item \textbf{Budget} : perturbation born\'ee par $\varepsilon$ en norme $\ell_\infty$
+    \item \textbf{82\,332} exemples d'entra\^inement
+    \item \textbf{175\,341} exemples de test
+    \item \textbf{42 features} r\'eseau (num\'eriques + cat\'egorielles)
+    \item Labels : \texttt{0} = normal, \texttt{1} = attaque
+    \item Classes \'equilibr\'ees : 55\% attaques
 \end{itemize}
 \end{exampleblock}
-\end{frame}
-
-%% ============================================================
-\section{Dataset et Pr\'etraitement}
-%% ============================================================
-
-\begin{frame}{Dataset UNSW-NB15}
-\begin{columns}[T]
-\column{0.52\textwidth}
-\begin{block}{Caract\'eristiques}
-\begin{itemize}
-    \item Trafic r\'eseau r\'eel captur\'e en laboratoire
-    \item 9 types d'attaques (DoS, Exploits, Backdoors, ...)
-    \item \textbf{42 features} par connexion
-\end{itemize}
-\end{block}
-
-\begin{table}
-\footnotesize
-\begin{tabular}{lrr}
-\toprule
-\textbf{Ensemble} & \textbf{Exemples} & \textbf{Attaques} \\
-\midrule
-Train & 82\,332  & 55.1\% \\
-Test  & 175\,341 & --- \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Classes bien \'equilibr\'ees $\Rightarrow$ pas de biais.
 
 \column{0.46\textwidth}
-\includegraphics[width=\textwidth]{../results/class_distribution.png}
+\begin{block}{Pipeline de pr\'etraitement}
+\begin{enumerate}\setlength\itemsep{3pt}
+    \item Suppression : \texttt{id}, \texttt{attack\_cat}
+    \item Valeurs manquantes $\rightarrow$ m\'ediane (train)
+    \item \texttt{LabelEncoder} sur cat\'egorielles
+    \item \texttt{StandardScaler} ajust\'e sur le train
+\end{enumerate}
+\end{block}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Pipeline de Pr\'etraitement}
-\begin{center}
-\begin{tikzpicture}[
-    node distance=0.35cm,
-    box/.style={draw,rounded corners,fill=myblue!12,minimum width=5.5cm,minimum height=0.55cm,font=\footnotesize,align=center},
-    arr/.style={-{Stealth},myblue,thick}
-]
-\node[box] (raw)  {Donn\'ees brutes (CSV)};
-\node[box,below=of raw] (drop) {Supprimer \texttt{id}, \texttt{attack\_cat}};
-\node[box,below=of drop] (nan)  {Remplacer \texttt{inf}/\texttt{NaN} par la m\'ediane du train};
-\node[box,below=of nan]  (enc)  {Encoder les variables texte (\texttt{LabelEncoder})};
-\node[box,below=of enc]  (sc)   {Normaliser (\texttt{StandardScaler}) : $\mu=0$, $\sigma=1$};
-\node[box,below=of sc,fill=mygreen!20]   (ok)   {Tenseurs PyTorch pr\^ets};
-\foreach \a/\b in {raw/drop,drop/nan,nan/enc,enc/sc,sc/ok}
-    \draw[arr] (\a) -- (\b);
-\end{tikzpicture}
-\end{center}
-\vspace{0.2em}
-\footnotesize \textbf{Pourquoi normaliser ?} Sans normalisation, \texttt{sbytes} $\in [0, 10^6]$ \'ecrase \texttt{sttl} $\in [0,255]$.
-\end{frame}
-
 %% ============================================================
-\section{Mod\`ele Baseline}
+%% SLIDE 4 — MODÈLE MLP
 %% ============================================================
-
-\begin{frame}{Architecture MLP}
+\begin{frame}{Mod\`ele Baseline --- Architecture MLP}
 \begin{columns}[T]
-\column{0.55\textwidth}
+\column{0.52\textwidth}
+\begin{block}{Architecture}
 \[
 \underbrace{42}_{\text{input}}
-\!\xrightarrow{+\text{ReLU}+\text{Drop}}\! 128
-\!\xrightarrow{+\text{ReLU}+\text{Drop}}\! 64
-\!\xrightarrow{+\text{ReLU}}\! 32
-\!\xrightarrow{+\sigma}\! 1
+\xrightarrow{\text{ReLU+Drop}(0.3)} 128
+\xrightarrow{\text{ReLU+Drop}(0.3)} 64
+\xrightarrow{\text{ReLU}} 32
+\xrightarrow{\sigma} 1
 \]
-
-\vspace{0.4em}
-\begin{itemize}
-    \item \textbf{Dropout 0.3} : \'eteint 30\% des neurones al\'eatoirement $\Rightarrow$ anti-surapprentissage
-    \item \textbf{Sigmoid} : sortie $\in [0,1]$, seuil 0.5
-    \item Optimiseur Adam, $lr=10^{-3}$, BCE Loss
-    \item 30 epochs, batch 512
+\begin{itemize}\setlength\itemsep{3pt}
+    \item Optimiseur : Adam ($lr=10^{-3}$)
+    \item Perte : Binary Cross-Entropy
+    \item 30~epochs, batch 512, seed~42
+    \item Sigmoid $\Rightarrow$ seuil 0.5 (Normal / Attaque)
 \end{itemize}
-
-\column{0.43\textwidth}
-\includegraphics[width=\textwidth]{../results/training_loss.png}
-\end{columns}
-\end{frame}
-
-\begin{frame}{R\'esultats Baseline}
-\begin{columns}[T]
-\column{0.45\textwidth}
-\begin{block}{M\'etriques sur donn\'ees propres}
-\begin{tabular}{lr}
-\toprule
-F1-score   & \textbf{0.9110} \\
-Precision  & 0.9879 \\
-Recall     & 0.8452 \\
-PR-AUC     & 0.9881 \\
-\midrule
-\rowcolor{myred!15}
-Evasion Rate & 15.5\% \\
-\bottomrule
-\end{tabular}
-\end{block}
-\vspace{0.3em}
-\alert{15.5\%} des attaques passent d\'ej\`a sans modification~!
-
-\column{0.52\textwidth}
-\includegraphics[width=\textwidth]{../results/confusion_baseline.png}
-\end{columns}
-\end{frame}
-
-%% ============================================================
-\section{Attaques Adversariales}
-%% ============================================================
-
-\begin{frame}{FGSM --- Fast Gradient Sign Method}
-\begin{block}{Formule}
-\[
-X_{\text{adv}} = X + \varepsilon \cdot \underbrace{\text{sign}\!\left(\nabla_X \mathcal{L}(f(X), y)\right)}_{\text{direction qui maximise l'erreur}} \cdot \underbrace{\mathbf{m}}_{\text{masque manipulable}}
-\]
 \end{block}
 
-\begin{columns}[T]
-\column{0.54\textwidth}
-\textbf{Algorithme :}
-\begin{enumerate}
-    \item Calculer la perte BCE sur l'exemple d'attaque
-    \item Backpropagate $\Rightarrow$ gradient des features
-    \item Perturber dans la direction du gradient
-    \item Appliquer uniquement sur les 14 features manipulables
-\end{enumerate}
-
-\column{0.43\textwidth}
-\begin{exampleblock}{Intuition}
-Le gradient dit \textit{``si tu augmentes cette feature, le mod\`ele se trompe davantage''}.
-On l'augmente de exactement $\varepsilon$.
-\end{exampleblock}
-\end{columns}
-\end{frame}
-
-\begin{frame}{PGD --- Projected Gradient Descent}
-\begin{block}{Formule}
-\[
-X^{(t+1)} = \Pi_{B(X,\varepsilon)}\!\left[X^{(t)} + \alpha \cdot \text{sign}\!\left(\nabla_{X^{(t)}} \mathcal{L}\right) \cdot \mathbf{m}\right],\quad \alpha = \frac{\varepsilon}{T}
-\]
-\end{block}
-
-\begin{columns}[T]
-\column{0.54\textwidth}
-\begin{itemize}
-    \item FGSM it\'er\'e ($T=10$ \'etapes)
-    \item Apr\`es chaque pas, \textbf{projection} dans la boule $\ell_\infty$ de rayon $\varepsilon$
-    \item Explore plus finement l'espace de perturbation
-    \item \alert{Attaque de r\'ef\'erence} pour \'evaluer la robustesse
-\end{itemize}
-
-\column{0.43\textwidth}
-\begin{alertblock}{PGD > FGSM}
-FGSM fait un grand pas aveugle.\\PGD fait 10 petits pas adapt\'es.
-\end{alertblock}
-\end{columns}
-\end{frame}
-
-\begin{frame}{R\'esultats des Attaques ($\varepsilon = 0.1$)}
-\begin{columns}[T]
-\column{0.55\textwidth}
-\begin{table}
+\column{0.44\textwidth}
+\begin{block}{R\'esultats sur donn\'ees propres}
 \footnotesize
-\begin{tabular}{lrrr}
+\begin{tabular}{lrlr}
 \toprule
-\textbf{Sc\'enario} & \textbf{F1} & \textbf{Recall} & \textbf{Evasion\%} \\
+F1-score  & \textbf{0.911} & Precision & 0.988 \\
+Recall    & 0.845          & PR-AUC    & 0.988 \\
 \midrule
-Propres & 0.9110 & 0.845 & 15.5\% \\
-FGSM    & 0.8533 & 0.752 & 24.8\% \\
-\rowcolor{myred!20}
-PGD     & 0.8402 & 0.732 & \textbf{26.8\%} \\
+\multicolumn{2}{l}{Evasion rate} & \multicolumn{2}{r}{\alert{15.5\%}} \\
 \bottomrule
 \end{tabular}
-\end{table}
-
-\vspace{0.4em}
-\begin{alertblock}{Conclusion}
-Sous PGD, \alert{1 attaque sur 4} passe inaper\c{c}ue. La pr\'ecision reste \'elev\'ee : les perturbations ne cr\'eent pas de faux positifs, elles font juste \'evader des vraies attaques.
-\end{alertblock}
-
-\column{0.42\textwidth}
-\includegraphics[width=\textwidth]{../results/attack_comparison.png}
+\end{block}
 \end{columns}
 \end{frame}
 
 %% ============================================================
-\section{D\'efenses}
+%% SLIDE 4 — COURBE D'ENTRAÎNEMENT & MATRICE DE CONFUSION
 %% ============================================================
-
-\begin{frame}{D\'efense 1 --- Adversarial Training : Approche 1 (FGSM-AT)}
+\begin{frame}{Baseline --- R\'esultats Visuels}
 \begin{columns}[T]
-\column{0.54\textwidth}
-\begin{block}{Principe}
-Re-entra\^iner sur un mix 50\% propres + 50\% FGSM.
-\end{block}
-\vspace{0.3em}
-\textbf{R\'esultat :}
-\begin{table}
-\scriptsize
-\begin{tabular}{lrr}
-\toprule
-Sc\'enario & F1 & Evasion\% \\
-\midrule
-Propres & 0.8971 & 17.8\% \\
-\rowcolor{myred!20}
-PGD & 0.7700 & \alert{36.7\%} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\column{0.49\textwidth}
+\centering
+\textbf{Courbe de perte (30~epochs)}\\[0.4em]
+\includegraphics[width=\textwidth,height=4.5cm,keepaspectratio]{../results/training_loss.png}
 
-\alert{Pire que le baseline (28.2\%) !}
-
-\column{0.43\textwidth}
-\begin{alertblock}{3 raisons de l'\'echec}
-\begin{enumerate}
-\scriptsize
-    \item \textbf{Robustness gap} : entra\^in\'e FGSM, \'evalu\'e PGD
-    \item \textbf{Distribution shift} : mix 50/50 contradictoire
-    \item \textbf{Attaque non-stabilis\'ee} : FGSM sur mod\`ele non-converg\'e
-\end{enumerate}
-\end{alertblock}
+\column{0.49\textwidth}
+\centering
+\textbf{Matrice de confusion (donn\'ees propres)}\\[0.4em]
+\includegraphics[width=\textwidth,height=4.5cm,keepaspectratio]{../results/confusion_baseline.png}
 \end{columns}
 \end{frame}
 
-\begin{frame}{D\'efense 1 --- Adversarial Training : Approche 2 (PGD-AT)}
+%% ============================================================
+%% SLIDE 5 — ATTAQUES : FGSM & PGD
+%% ============================================================
+\begin{frame}{Attaques Adversariales}
 \begin{columns}[T]
-\column{0.54\textwidth}
-\begin{block}{Corrections appliqu\'ees}
-\begin{itemize}
-    \item FGSM $\rightarrow$ \textbf{PGD-7} (m\^eme famille que l'\'evaluation)
-    \item 100\% adversarial (\'elimination du distribution shift)
-\end{itemize}
-\end{block}
-\vspace{0.2em}
+\column{0.48\textwidth}
+\begin{block}{FGSM --- 1 seul pas}
 \[
-\min_\theta\; \mathbb{E}\!\left[\max_{\|\delta\|_\infty \leq \varepsilon} \mathcal{L}(f_\theta(x+\delta), y)\right]
+X_{\text{adv}} = X + \varepsilon \cdot \text{sign}(\nabla_X \mathcal{L}) \cdot \mathbf{m}
 \]
-\textbf{R\'esultat :}
-\begin{table}
-\scriptsize
-\begin{tabular}{lrr}
-\toprule
-Sc\'enario & F1 & Evasion\% \\
-\midrule
-Propres & 0.8943 & 18.1\% \\
-\rowcolor{myred!30}
-PGD & 0.7425 & \alert{40.2\%} \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\column{0.43\textwidth}
-\begin{alertblock}{Encore pire !}
-Entra\^iner sur 100\% PGD sans donn\'ees propres provoque un \textbf{oubli catastrophique}.
-
-\medskip
-Le mod\`ele surfit PGD-7 sans g\'en\'eraliser \`a PGD-40.
-\end{alertblock}
-\vspace{0.3em}
-\begin{block}{Conclusion}
-L'adversarial training \'echoue sur ce dataset tabulaire h\'et\'erog\`ene.
-\end{block}
-\end{columns}
-\end{frame}
-
-\begin{frame}{D\'efense 1 --- Adversarial Training : Approche 3 (PGD-AT Corrig\'e)}
-\begin{columns}[T]
-\column{0.54\textwidth}
-\begin{block}{Hypoth\`ese}
-Combiner PGD-10 (corrige robustness gap) + mix 50/50 (corrige l'oubli catastrophique).
-\end{block}
-\vspace{0.2em}
-Param\`etres : $\varepsilon=0.1$, $\alpha=0.01$, PGD-10, 30 epochs, batch 256, $lr=0.0005$
-
-\vspace{0.3em}
-\textbf{R\'esultat :}
-\begin{table}
-\scriptsize
-\begin{tabular}{lrr}
-\toprule
-Sc\'enario & F1 & Evasion\% \\
-\midrule
-Propres & 0.9116 & 15.3\% \\
-\rowcolor{myred!30}
-PGD & 0.7327 & \alert{41.5\%} \\
-\bottomrule
-\end{tabular}
-\end{table}
-\alert{Le pire r\'esultat de toutes les approches !}
-
-\column{0.43\textwidth}
-\begin{alertblock}{Gradient Masking}
-PGD-10 pousse la Sigmoid vers des valeurs tr\`es confiantes (0 ou 1) $\Rightarrow$ gradients faibles.
-
-\medskip
-PGD-10 ne trouve plus de perturbation (fausse robustesse), mais PGD-40 contourne en explorant davantage.
-\end{alertblock}
-\vspace{0.3em}
-\begin{block}{Bilan adv. training}
-Les 3 variantes \'echouent. La cause : donn\'ees tabulaires h\'et\'erog\`enes, sans structure spatiale.
-\end{block}
-\end{columns}
-\end{frame}
-
-\begin{frame}{D\'efense 2 --- Feature Squeezing}
-\begin{columns}[T]
-\column{0.54\textwidth}
-\begin{block}{Principe}
-R\'eduire la pr\'ecision num\'erique pour effacer les petites perturbations \textbf{avant le mod\`ele}.
+Perturbe dans la direction du gradient \textbf{en une \'etape}.\\
+Rapide, mais moins efficace que PGD.
 \end{block}
 
+\column{0.48\textwidth}
+\begin{block}{PGD --- It\'eratif (r\'ef\'erence)}
 \[
-X_{\text{sq}} = \frac{\left\lfloor \dfrac{X}{X_{\max}} \cdot 2^b + 0.5 \right\rfloor}{2^b} \cdot X_{\max}
+X^{(t+1)} = \Pi_{B_\varepsilon}\!\left[X^{(t)} + \alpha \cdot \text{sign}(\nabla \mathcal{L}) \cdot \mathbf{m}\right]
 \]
-
-Avec $b = 4$ bits $\Rightarrow$ \textbf{16 niveaux} de quantification.
-
-\vspace{0.4em}
-\textbf{Avant :} \texttt{dur = 2.10183746} \\
-\textbf{Apr\`es :} \texttt{dur = 2.09375} \\[0.2em]
-La perturbation tombe dans le m\^eme niveau $\Rightarrow$ effac\'ee.
-
-\column{0.43\textwidth}
-\begin{exampleblock}{Pourquoi \c{c}a marche}
-L'attaquant calcule sa perturbation en float32 ($\varepsilon \approx 10^{-2}$).
-Apr\`es quantification \`a 4 bits, cette pr\'ecision est perdue.
-\end{exampleblock}
-
-\begin{block}{Avantage}
-\begin{itemize}
-    \item Pas de re-entra\^inement
-    \item Appliqu\'e \`a l'inf\'erence seulement
-    \item Compl\'ementaire \`a tout mod\`ele
-\end{itemize}
+\textbf{40 it\'erations} + projection L$_\infty$.\\
+Explore mieux l'espace de perturbation.
 \end{block}
 \end{columns}
-\end{frame}
 
-%% ============================================================
-\section{Comparaison et R\'esultats}
-%% ============================================================
-
-\begin{frame}{Tableau Comparatif Complet}
-\begin{table}
-\scriptsize
-\begin{tabular}{llrrr}
-\toprule
-\textbf{Mod\`ele} & \textbf{Sc\'enario} & \textbf{F1} & \textbf{Recall} & \textbf{Evasion\%} \\
-\midrule
-Baseline             & Propres & 0.9110 & 0.845 & 15.5\% \\
-Baseline             & PGD     & 0.8306 & 0.718 & 28.2\% \\
-\midrule
-\rowcolor{myred!10}
-Approche 1 FGSM-AT   & Propres & 0.8971 & 0.822 & 17.8\% \\
-\rowcolor{myred!15}
-Approche 1 FGSM-AT   & PGD     & 0.7700 & 0.633 & 36.7\% \\
-\midrule
-\rowcolor{myred!15}
-Approche 2 PGD-AT    & Propres & 0.8943 & 0.819 & 18.1\% \\
-\rowcolor{myred!25}
-Approche 2 PGD-AT    & PGD     & 0.7425 & 0.598 & \alert{40.2\%} \\
-\midrule
-\rowcolor{myred!20}
-Approche 3 PGD-AT Corr & Propres & 0.9116 & 0.847 & 15.3\% \\
-\rowcolor{myred!35}
-Approche 3 PGD-AT Corr & PGD     & 0.7327 & 0.585 & \alert{41.5\%} \\
-\midrule
-\rowcolor{mygreen!15}
-Feat. Squeezing      & Propres & 0.8818 & 0.814 & 18.6\% \\
-\rowcolor{mygreen!25}
-Feat. Squeezing      & PGD     & \textbf{0.8449} & 0.755 & \textbf{24.5\%} \\
-\bottomrule
-\end{tabular}
-\end{table}
-\vspace{0.2em}
+\vspace{0.6em}
 \begin{center}
-\footnotesize L'adversarial training \'echoue dans les 3 variantes (36--41.5\%). Le Feature Squeezing est la seule d\'efense efficace (24.5\%).
+\footnotesize
+$\mathbf{m}$ = masque des 14 features manipulables \textbullet\
+$\alpha = \varepsilon/T$ \textbullet\
+$\Pi$ = clamp dans $[-\varepsilon,+\varepsilon]$
 \end{center}
 \end{frame}
 
-\begin{frame}{Graphiques Comparatifs}
-\includegraphics[width=\textwidth]{../results/final_comparison.png}
-\end{frame}
-
-\begin{frame}{Robustesse vs Budget $\varepsilon$}
+%% ============================================================
+%% SLIDE 6 — IMPACT DES ATTAQUES : TABLEAU
+%% ============================================================
+\begin{frame}{Impact des Attaques sur le Baseline --- R\'esultats}
 \begin{columns}[T]
-\column{0.54\textwidth}
-\includegraphics[width=\textwidth]{../results/robustness_vs_epsilon.png}
-
-\column{0.44\textwidth}
-\begin{table}
-\scriptsize
+\column{0.52\textwidth}
+\begin{alertblock}{R\'esultats ($\varepsilon=0.1$)}
+\normalsize
 \begin{tabular}{lrr}
 \toprule
-$\varepsilon$ & \textbf{Baseline} & \textbf{Adv. Train.} \\
+\textbf{Sc\'enario} & \textbf{F1} & \textbf{Evasion} \\
 \midrule
-0.05 & 0.874 & 0.813 \\
-0.10 & 0.840 & 0.774 \\
-0.30 & 0.700 & 0.659 \\
+Donn\'ees propres & 0.911 & 15.5\% \\
+Sous FGSM         & 0.853 & 24.8\% \\
+\rowcolor{myred!20}
+Sous PGD-40       & 0.840 & \textbf{26.8\%} \\
 \bottomrule
 \end{tabular}
-\end{table}
-\vspace{0.4em}
-\begin{itemize}
-    \item Les deux mod\`eles se d\'egradent avec $\varepsilon$
-    \item L'adversarial training (10 epochs seulement) est moins robuste ici
-    \item Avec 30~epochs + PGD dans l'entra\^inement, les r\'esultats seraient meilleurs
-\end{itemize}
+\end{alertblock}
+
+\column{0.44\textwidth}
+\vspace{1em}
+\begin{center}
+{\large\textcolor{myred}{\textbf{1 attaque sur 4\\passe inaper\c{c}ue\\sous PGD-40.}}}
+
+\vspace{1em}
+\normalsize
+Le mod\`ele n'a subi \textbf{aucune modification}\\
+--- il est vulnérable par d\'efaut.
+\end{center}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Matrices de Confusion}
-\includegraphics[width=\textwidth]{../results/confusion_matrices.png}
+%% ============================================================
+%% SLIDE 7 — IMPACT DES ATTAQUES : GRAPHES
+%% ============================================================
+\begin{frame}{Impact des Attaques --- Visualisation}
+\centering
+\includegraphics[width=0.90\textwidth,height=6.5cm,keepaspectratio]{../results/attack_comparison.png}
 \end{frame}
 
 %% ============================================================
-\section{Conclusion}
+%% SLIDE 7 — DÉFENSE 1 : ADVERSARIAL TRAINING — POURQUOI ÇA ÉCHOUE
 %% ============================================================
-
-\begin{frame}{Conclusion}
+\begin{frame}{D\'efense 1 --- Adversarial Training : Pourquoi \c{c}a \'echoue ?}
 \begin{columns}[T]
 \column{0.48\textwidth}
-\begin{block}{Ce qu'on a montr\'e}
-\begin{itemize}
-    \item MLP baseline : F1 = \textbf{0.911}, evasion \textbf{15.5\%}
-    \item FGSM/PGD font \'evader \textbf{28\%} des attaques
-    \item Adversarial training (FGSM-AT, PGD-AT, PGD-AT corr.) : \alert{\'echec sur les 3 variantes} --- evasion 36--41.5\%
-    \item \textbf{Feature Squeezing} : seule d\'efense efficace (evasion \textbf{24.5\%})
+\begin{alertblock}{1 --- Robustness gap}
+On s'entra\^ine avec \textbf{FGSM} (1~\'etape),\\
+on est \'evalu\'e sous \textbf{PGD-40} (40~\'etapes).\\[0.4em]
+L'attaquant de l'\'evaluation est bien plus fort\\
+que l'adversaire vu pendant l'entra\^inement.
+\end{alertblock}
+
+\column{0.48\textwidth}
+\begin{alertblock}{2 --- Oubli catastrophique}
+Entra\^iner sur 100\% d'exemples adversariaux\\
+$\Rightarrow$ le mod\`ele \textbf{oublie} la distribution naturelle.
+\end{alertblock}
+\vspace{0.4em}
+\begin{alertblock}{3 --- Gradient masking}
+La Sigmoid sature vers 0 ou 1.\\
+Les gradients deviennent quasi-nuls\\
+$\Rightarrow$ \textbf{fausse robustesse} : PGD-10 ne trouve plus\\
+de perturbation, mais PGD-40 contourne.
+\end{alertblock}
+\end{columns}
+\end{frame}
+
+%% ============================================================
+%% SLIDE 8 — DÉFENSE 1 : RÉSULTATS
+%% ============================================================
+\begin{frame}{D\'efense 1 --- Adversarial Training : R\'esultats}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Trois variantes test\'ees}
+\normalsize
+\begin{tabular}{lr}
+\toprule
+\textbf{Approche} & \textbf{Evasion PGD-40} \\
+\midrule
+Baseline (r\'ef.)       & 28.2\% \\
+\midrule
+\rowcolor{myred!15}
+FGSM-AT                 & \alert{36.7\%} \\
+\rowcolor{myred!22}
+PGD-AT (100\% adv.)     & \alert{40.2\%} \\
+\rowcolor{myred!32}
+PGD-AT mix 50/50        & \alert{41.5\%} \\
+\bottomrule
+\end{tabular}
+\end{block}
+
+\column{0.46\textwidth}
+\vspace{1.5em}
+\begin{center}
+{\Large\textcolor{myred}{\textbf{Toutes les variantes\\aggravent la situation.}}}
+
+\vspace{1.5em}
+\normalsize
+Cause profonde : les donn\'ees tabulaires r\'eseau sont h\'et\'erog\`enes,\\
+sans structure spatiale.\\
+L'AT a \'et\'e con\c{c}u pour les images.
+\end{center}
+\end{columns}
+\end{frame}
+
+%% ============================================================
+%% SLIDE 8 — DÉFENSE 2 : FEATURE SQUEEZING
+%% ============================================================
+\begin{frame}{D\'efense 2 --- Feature Squeezing}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{exampleblock}{Principe}
+\[
+X_{\text{sq}} = \frac{\left\lfloor \dfrac{X}{X_{\max}} \cdot 2^b + 0.5 \right\rfloor}{2^b} \cdot X_{\max},
+\quad b=4
+\]
+Avec \textbf{4 bits} (16 niveaux), les petites perturbations
+num\'eriques sont effac\'ees par arrondi.\\[0.4em]
+\textbf{Aucun r\'e-entra\^inement n\'ecessaire.}
+\end{exampleblock}
+
+\column{0.46\textwidth}
+\begin{block}{R\'esultats ($\varepsilon=0.1$)}
+\footnotesize
+\begin{tabular}{lrr}
+\toprule
+\textbf{Sc\'enario} & \textbf{F1} & \textbf{Evasion} \\
+\midrule
+Propres (baseline) & 0.911 & 15.5\% \\
+PGD (baseline)     & 0.840 & 28.2\% \\
+\midrule
+\rowcolor{inptcyan!15}
+Feat. Sq. propres  & 0.882 & 18.6\% \\
+\rowcolor{inptcyan!30}
+Feat. Sq. PGD-40   & \textbf{0.845} & \textbf{24.5\%} \\
+\bottomrule
+\end{tabular}
+\end{block}
+
+\vspace{0.4em}
+\footnotesize
+\textcolor{inptblue}{Gain : $-3.7$ pts d'evasion sous PGD sans toucher au mod\`ele.}
+\end{columns}
+\end{frame}
+
+%% ============================================================
+%% SLIDE 9 — DÉFENSE 3 : TRADES + PGD-7
+%% ============================================================
+\begin{frame}{D\'efense 3 --- TRADES + PGD-7}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Formulation TRADES}
+\[
+\mathcal{L} = \underbrace{\text{BCE}(f(x),y)}_{\text{classification propre}}
++ \beta \cdot \underbrace{\text{KL}(f(x) \| f(x_{\text{adv}}))}_{\text{stabilit\'e}}
+\]
+Plut\^ot que forcer $f(x_{\text{adv}}) = y$, on force $f(x_{\text{adv}}) \approx f(x)$.\\
+La Sigmoid ne sature plus $\Rightarrow$ \textbf{pas de gradient masking}.
+
+\medskip
+\begin{itemize}\setlength\itemsep{2pt}
+    \item PGD-7 \'elimine le \textbf{robustness gap}
+    \item Ratio dynamique 20\%$\to$50\% \'evite l'\textbf{oubli catastrophique}
 \end{itemize}
 \end{block}
 
-\column{0.48\textwidth}
-\begin{alertblock}{Pourquoi l'adv. training \'echoue}
-Les donn\'ees r\'eseau sont \textbf{tabulaires et h\'et\'erog\`enes} --- pas de structure spatiale.
-Les 3 variantes souffrent respectivement de robustness gap, oubli catastrophique, et gradient masking.
-\end{alertblock}
+\column{0.46\textwidth}
+\begin{block}{R\'esultats}
+\footnotesize
+\begin{tabular}{lrr}
+\toprule
+\textbf{Sc\'enario} & \textbf{F1} & \textbf{Evasion} \\
+\midrule
+Baseline propres & 0.911 & 15.5\% \\
+Baseline PGD-40  & 0.840 & 28.2\% \\
+\midrule
+\rowcolor{inptblue!15}
+TRADES propres   & \textbf{0.919} & \textbf{13.1\%} \\
+\rowcolor{inptblue!25}
+TRADES PGD-40    & \textbf{0.894} & \textbf{17.4\%} \\
+\bottomrule
+\end{tabular}
+\end{block}
 
-\vspace{0.3em}
+\vspace{0.4em}
+\footnotesize
+\textcolor{inptblue}{F1 propres \textbf{sup\'erieur} au baseline (0.919 > 0.911).\\
+La loss KL agit aussi comme r\'egulariseur.}
+\end{columns}
+\end{frame}
+
+%% ============================================================
+%% SLIDE 12 — DÉFENSE 4 : TRADES + FS PIPELINE
+%% ============================================================
+\begin{frame}{D\'efense 4 --- Pipeline TRADES + Feature Squeezing}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Principe du pipeline}
+\[
+x \;\xrightarrow{\text{FS (4 bits)}}\; x_{\text{sq}} \;\xrightarrow{\text{TRADES}}\; \hat{y}
+\]
+FS efface les perturbations \textbf{avant} le mod\`ele.\\
+TRADES juge un signal quasi-propre.\\[0.4em]
+Les deux d\'efenses sont \textbf{orthogonales} :\\
+FS agit sur l'\textbf{entr\'ee}, TRADES sur le \textbf{mod\`ele}.
+\end{block}
+
+\column{0.46\textwidth}
+\begin{block}{R\'esultats --- Meilleure configuration}
+\footnotesize
+\begin{tabular}{lrr}
+\toprule
+\textbf{Sc\'enario} & \textbf{F1} & \textbf{Evasion} \\
+\midrule
+Baseline PGD-40     & 0.840 & 28.2\% \\
+\midrule
+\rowcolor{inptblue!28}
+TRADES+FS propres   & \textbf{0.909} & \textbf{10.3\%} \\
+\rowcolor{inptblue!40}
+TRADES+FS PGD-40    & \textbf{0.908} & \textbf{10.7\%} \\
+\bottomrule
+\end{tabular}
+\medskip
+
+\textcolor{inptcyan}{\textbf{10.3\% propres $\approx$ 10.7\% PGD-40}} :\\
+le pipeline est quasi-insensible \`a l'attaque.
+\end{block}
+\end{columns}
+\end{frame}
+
+%% ============================================================
+%% SLIDE 13 — COMPARAISON VISUELLE DES DÉFENSES
+%% ============================================================
+\begin{frame}{Comparaison Visuelle --- Toutes les D\'efenses}
+\centering
+\includegraphics[width=0.88\textwidth,height=6.5cm,keepaspectratio]{../results/trades_comparison.png}
+\end{frame}
+
+%% ============================================================
+%% SLIDE 11 — CONCLUSION & PERSPECTIVES
+%% ============================================================
+\begin{frame}{Conclusion \& Perspectives}
+\begin{columns}[T]
+\column{0.50\textwidth}
+\begin{block}{Bilan des r\'esultats}
+\footnotesize
+\begin{tabular}{lr}
+\toprule
+\textbf{Configuration} & \textbf{Evasion PGD-40} \\
+\midrule
+Baseline               & 28.2\% \\
+Adv. Training          & \alert{36--41\%} \\
+Feature Squeezing      & 24.5\% \\
+TRADES + PGD-7         & 17.4\% \\
+\rowcolor{inptblue!30}
+\textbf{TRADES + FS}   & \textbf{10.7\%} \\
+\bottomrule
+\end{tabular}
+\end{block}
+
+\column{0.47\textwidth}
 \begin{exampleblock}{Perspectives}
-\begin{itemize}
-    \item Ratio propres/adversariaux calibr\'e
-    \item AutoAttack pour \'evaluation plus robuste
-    \item Randomized smoothing (certifi\'e)
+Avec plus de temps et de ressources :
+\begin{itemize}\setlength\itemsep{3pt}
+    \item Seuil 0.40 sur TRADES seul $\Rightarrow$ \textbf{14.7\%}
+    \item TRADES + FS + seuil 0.45 $\Rightarrow$ \textbf{7.8\%}
+    \item AutoAttack (\'evaluation plus rigoureuse)
+    \item Randomized Smoothing (robustesse certifi\'ee)
 \end{itemize}
 \end{exampleblock}
 \end{columns}
 \end{frame}
 
+%% ============================================================
+%% SLIDE 12 — MERCI
+%% ============================================================
 \begin{frame}[plain]
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[inptblue] (current page.south west) rectangle (current page.north east);
+  \fill[inptcyan] ([yshift=0.6cm]current page.south west)
+                  rectangle ([yshift=0.9cm]current page.south east);
+\end{tikzpicture}
 \begin{center}
-\vspace{2em}
-{\LARGE\bfseries\color{myblue} Merci}\\[1em]
-{\large Questions ?}\\[2em]
-\begin{tabular}{ll}
-\textbf{Dataset} & UNSW-NB15 (Moustafa \& Slay, 2015) \\
-\textbf{FGSM}    & Goodfellow et al., ICLR 2015 \\
-\textbf{PGD}     & Madry et al., ICLR 2018 \\
-\textbf{Feat. Squeezing} & Xu et al., NDSS 2018 \\
-\end{tabular}
-\vspace{1.5em}
-
-\footnotesize\color{gray}
-Code : \texttt{github.com/zakeelm6/deep-learning-project-adversarial-IDS}
+\vspace{2.5cm}
+{\LARGE\bfseries\color{white} Merci pour votre attention}\\[0.8em]
+{\large\color{inptcyan} Questions ?}\\[2em]
+{\footnotesize\color{white!80}
+FGSM : Goodfellow et al., ICLR 2015 \quad
+PGD : Madry et al., ICLR 2018 \quad
+TRADES : Zhang et al., ICML 2019}
 \end{center}
 \end{frame}
 

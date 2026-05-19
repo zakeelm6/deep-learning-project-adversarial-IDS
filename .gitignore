@@ -210,7 +210,25 @@ __marimo__/
 data/*.csv
 data/*.pcap
 
-# Saved models
+# Saved models (too large)
 results/*.pth
 archive.zip
-archive.zip
+
+# LaTeX build artifacts
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/*.nav
+report/*.snm
+report/*.fls
+report/*.fdb_latexmk
+report/*.synctex.gz
+report/*.pdf
+
+# Misc
+images.jpeg
+ZLAFA.png
+PRESENTATION.md
+RECAP.md
+PROJECT1.md
